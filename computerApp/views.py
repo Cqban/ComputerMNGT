@@ -13,14 +13,15 @@ def index(request):
 	return render(request, 'index.html', context)
 
 def machine_list_view(request):
-    machine_types = []
-    machines = Machine.objects.all()
-    types = machines.values_list('mach', flat=True).distinct()
-    for t in types:
-        machines_by_type = machines.filter(mach=t)
-        machine_types.append({'type': t, 'machines': machines_by_type})
-    context = {'machines': machines, 'machineTypes': machine_types}
-    return render(request, 'computerApp/machine_list.html', context)
+	machines = Machine.objects.all()
+	query = request.GET.get('q')
+	mach = request.GET.get('mach')
+	if query:
+		machines = machines.filter(nom__icontains=query)
+	if mach:
+		machines = machines.filter(mach=mach)
+	context = {'machines': machines}
+	return render(request, 'computerApp/machine_list.html', context)
 
 def machine_detail_view(request, pk):
 	machine = get_object_or_404(Machine, id=pk)
@@ -50,6 +51,9 @@ def delete_machine(request, machine_id):
 
 def personnel_list_view(request):
 	personnels = Personnel.objects.all()
+	query = request.GET.get('q')
+	if query:
+		personnels = personnels.filter(nom__icontains=query)
 	context={'personnels': personnels}
 	return render(request, 'computerApp/personnel_list.html', context)
 

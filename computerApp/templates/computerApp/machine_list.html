@@ -4,9 +4,16 @@
 {% block content %}
 <div>
     <h1>Liste des machines</h1>
-    <div class="typebutton">
-        <button type="button" class="btn btn-primary" id="allMachinesBtn" onclick="showAllMachines()">Toutes</button>
-        <button type="button" class="btn btn-primary" id="allMachinesBtn" onclick="showMachinesByType()">Par Type</button>
+    <form method="GET" class="input-group mb-3">
+        <input class="text" class="form-vontrol" placeholder="Nom d'une machine..." aria-label="Search" aria-describedby="button-addon2" name="q">
+        <button class="btn btn-outline-success" type="submit" id="button-addon2">Rechercher</button>
+    </form>
+    <div class="btn-group mb-3" role="group" aria-label="Basic example">
+        <a href="{% url 'machines' %}" class="btn btn-secondary">Tous</a>
+        <a href="?mach=PC" class="btn btn-secondary">PC</a>
+        <a href="?mach=Mac" class="btn btn-secondary">Mac</a>
+        <a href="?mach=Switch" class="btn btn-secondary">Switch</a>
+        <a href="?mach=Serveur" class="btn btn-secondary">Serveur</a>
     </div>
     <hr>
 </div>
@@ -28,43 +35,10 @@
     </li>
     {% endfor %}
 </ul>
-<ul class="machines-container" id="machinesByType" style="display:none">
-    {% for machType in machineTypes %}
-        <div class="separator">
-            <a>{{ machType.type }}sㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤ</a>
-        </div>
-        {% for machine in machType.machines %}
-            <li class="machine">
-                <a>{{ machine.nom }}</a>
-                {% if machine.mach == "PC" %}
-                <img src="{% static 'computerApp/images/PC.png' %}" alt="logo">
-                {% elif machine.mach == "Mac" %}
-                <img src="{% static 'computerApp/images/mac.png' %}" alt="logo">
-                {% elif machine.mach == "Switch" %}
-                <img src="{% static 'computerApp/images/switch.png' %}" alt="logo">
-                {% elif machine.mach == "Serveur" %}
-                <img src="{% static 'computerApp/images/server.png' %}" alt="logo">
-                {% endif %}
-                <a href="{% url 'machine-detail' machine.id %}" class="btn btn-primary">Details</a>
-            </li>
-        {% endfor %}
-        <hr>
-    {% endfor %}
-</ul>
+
 
 {% else %}
 <p>Il n'y a pas de machine.</p>
 {% endif %}
 
-<script>
-    function showAllMachines() {
-        document.getElementById("allMachines").style.display = "flex";
-        document.getElementById("machinesByType").style.display = "none";
-    }
-
-    function showMachinesByType() {
-        document.getElementById("allMachines").style.display = "none";
-        document.getElementById("machinesByType").style.display = "flex";
-    }
-</script>
 {% endblock %}

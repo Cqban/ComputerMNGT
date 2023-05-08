@@ -13,6 +13,11 @@
     {% block content %}
         <div>
             <h1>Liste du Personnel</h1>
+            <form method="GET" class="input-group mb-3">
+                <input class="text" class="form-vontrol" placeholder="Nom d'une machine..." aria-label="Search" aria-describedby="button-addon2" name="q">
+                <button class="btn btn-outline-success" type="submit" id="button-addon2">Rechercher</button>
+            </form>
+            <hr>
         </div>
         {% if personnels %}
         <ul class="personnel-container">
