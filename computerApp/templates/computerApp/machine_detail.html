@@ -1,0 +1,26 @@
+{% extends "index.html" %}
+
+{% block content %}
+
+<div class="container my-5">
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <div class="card bg-dark text-light">
+        <div class="card-header">
+          <h4>Nom: {{ machine.nom }}</h4>
+        </div>
+        <div class="card-body">
+          <p><strong>Id</strong> : {{ machine.id }}</p>
+          <p><strong>Date de maintenance</strong> : {{ machine.maintenanceDate }}</p>
+          <p><strong>Type</strong> : {{ machine.mach }}</p>
+          <form action="{% url 'delete_machine' machine.id %}" method="post">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger mt-3">Supprimer cette machine</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

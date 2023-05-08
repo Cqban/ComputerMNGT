@@ -1,0 +1,50 @@
+{% extends "index.html" %}
+
+{% block content %}
+<div class="container my-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-8">
+      <div class="card">
+        <div class="card-header">
+          Chat avec GPT
+        </div>
+        <div class="card-body" id="chatbox">
+          {% for message in messages %}
+          {% if message.user == "user" %}
+          <div class="row mb-2 justify-content-end">
+            <div class="col-auto">
+              <div class="card bg-primary text-white">
+                <div class="card-body">
+                  {{ message.content }}
+                </div>
+              </div>
+            </div>
+          </div>
+          {% else %}
+          <div class="row mb-2 justify-content-start">
+            <div class="col-auto">
+              <div class="card bg-secondary text-white">
+                <div class="card-body">
+                  {{ message.content }}
+                </div>
+              </div>
+            </div>
+          </div>
+          {% endif %}
+          {% endfor %}
+        </div>
+        <div class="card-footer">
+          <form method="post" action="{% url 'chatbot' %}">
+            {% csrf_token %}
+            <div class="form-group">
+              <textarea class="form-control" name="message" rows="3" placeholder="Tapez votre message ici..."></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Envoyer</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
