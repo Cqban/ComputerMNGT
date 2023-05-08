@@ -1,38 +1,70 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    {% extends "index.html" %}
-    {% load static %}
+{% extends "index.html" %}
+{% load static %}
 
-    {% block content %}
-        <h1>Liste des machines</h1>
-        {% if machines %}
-        <ul class="machines-container">
-            {% for machine in machines %}
-                <li class="machine">
-                    <a>{{machine.nom}}</a>
-                    {% if machine.mach == "PC" %} 
-                        <img src="{% static 'computerApp/images/PC.png' %}" alt="logo">
-                    {% elif machine.mach == "Mac" %}
-                        <img src="{% static 'computerApp/images/mac.png' %}" alt="logo">
-                    {% elif machine.mach == "Switch" %}
-                        <img src="{% static 'computerApp/images/switch.png' %}" alt="logo">
-                    {% elif machine.mach == "Serveur" %}
-                        <img src="{% static 'computerApp/images/server.png' %}" alt="logo">
-                    {% endif %}
-                    <a href="{% url 'machine-detail' machine.id %}" class="btn btn-primary">Details</a>
-                </li>
-            {% endfor %}
-        </ul>
-        {% else %}
-            <p>Il n'y a pas de machine.</p>
+{% block content %}
+<div>
+    <h1>Liste des machines</h1>
+    <div class="typebutton">
+        <button type="button" class="btn btn-primary" id="allMachinesBtn" onclick="showAllMachines()">Toutes</button>
+        <button type="button" class="btn btn-primary" id="allMachinesBtn" onclick="showMachinesByType()">Par Type</button>
+    </div>
+    <hr>
+</div>
+{% if machines %}
+<ul class="machines-container" id="allMachines">
+    {% for machine in machines %}
+    <li class="machine">
+        <a>{{machine.nom}}</a>
+        {% if machine.mach == "PC" %}
+        <img src="{% static 'computerApp/images/PC.png' %}" alt="logo">
+        {% elif machine.mach == "Mac" %}
+        <img src="{% static 'computerApp/images/mac.png' %}" alt="logo">
+        {% elif machine.mach == "Switch" %}
+        <img src="{% static 'computerApp/images/switch.png' %}" alt="logo">
+        {% elif machine.mach == "Serveur" %}
+        <img src="{% static 'computerApp/images/server.png' %}" alt="logo">
         {% endif %}
-    {% endblock %}
-</body>
-</html>
+        <a href="{% url 'machine-detail' machine.id %}" class="btn btn-primary">Details</a>
+    </li>
+    {% endfor %}
+</ul>
+<ul class="machines-container" id="machinesByType" style="display:none">
+    {% for machType in machineTypes %}
+        <div class="separator">
+            <a>{{ machType.type }}sㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤ</a>
+        </div>
+        {% for machine in machType.machines %}
+            <li class="machine">
+                <a>{{ machine.nom }}</a>
+                {% if machine.mach == "PC" %}
+                <img src="{% static 'computerApp/images/PC.png' %}" alt="logo">
+                {% elif machine.mach == "Mac" %}
+                <img src="{% static 'computerApp/images/mac.png' %}" alt="logo">
+                {% elif machine.mach == "Switch" %}
+                <img src="{% static 'computerApp/images/switch.png' %}" alt="logo">
+                {% elif machine.mach == "Serveur" %}
+                <img src="{% static 'computerApp/images/server.png' %}" alt="logo">
+                {% endif %}
+                <a href="{% url 'machine-detail' machine.id %}" class="btn btn-primary">Details</a>
+            </li>
+        {% endfor %}
+        <hr>
+    {% endfor %}
+</ul>
+
+{% else %}
+<p>Il n'y a pas de machine.</p>
+{% endif %}
+
+<script>
+    function showAllMachines() {
+        document.getElementById("allMachines").style.display = "flex";
+        document.getElementById("machinesByType").style.display = "none";
+    }
+
+    function showMachinesByType() {
+        document.getElementById("allMachines").style.display = "none";
+        document.getElementById("machinesByType").style.display = "flex";
+    }
+</script>
+{% endblock %}

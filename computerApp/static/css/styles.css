@@ -8,10 +8,13 @@ a {
     color: #fff;
 }
   
-h1, h2, h3, h4, h5, h6 {
-    color: #fff;
+div h1 {
+    color: #ffffff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 1%;
 }
-  
 
 .machines-container {
     display: flex;
@@ -23,8 +26,8 @@ h1, h2, h3, h4, h5, h6 {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    width: 200px;
-    height: 250px;
+    width: 245px;
+    height: 300px;
     border: 2px solid #191c1f;
     border-radius: 7%;
     margin: 10px;
@@ -62,8 +65,8 @@ h1, h2, h3, h4, h5, h6 {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    width: 200px;
-    height: 250px;
+    width: 245px;
+    height: 300px;
     border: 2px solid #191c1f;
     border-radius: 7%;
     margin: 10px;
@@ -91,3 +94,10 @@ h1, h2, h3, h4, h5, h6 {
     text-overflow: ellipsis;
 }
 
+.card {
+    background-color: #212529;
+}
+
+.card button {
+    margin-top: 3%;
+}

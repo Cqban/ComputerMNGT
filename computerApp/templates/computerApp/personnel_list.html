@@ -11,7 +11,9 @@
     {% load static %}
 
     {% block content %}
-        <h1>Liste du Personnel</h1>
+        <div>
+            <h1>Liste du Personnel</h1>
+        </div>
         {% if personnels %}
         <ul class="personnel-container">
             {% for personnel in personnels %}

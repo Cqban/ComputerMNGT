@@ -13,9 +13,14 @@ def index(request):
 	return render(request, 'index.html', context)
 
 def machine_list_view(request):
-	machines = Machine.objects.all()
-	context={'machines': machines}
-	return render(request, 'computerApp/machine_list.html', context)
+    machine_types = []
+    machines = Machine.objects.all()
+    types = machines.values_list('mach', flat=True).distinct()
+    for t in types:
+        machines_by_type = machines.filter(mach=t)
+        machine_types.append({'type': t, 'machines': machines_by_type})
+    context = {'machines': machines, 'machineTypes': machine_types}
+    return render(request, 'computerApp/machine_list.html', context)
 
 def machine_detail_view(request, pk):
 	machine = get_object_or_404(Machine, id=pk)
@@ -23,17 +28,12 @@ def machine_detail_view(request, pk):
 	return render(request, 'computerApp/machine_detail.html', context)
 
 def machine_add_form(request):
-	print("lol")
 	if request.method == 'POST':
-		print("post")
 		form = AddMachineForm(request.POST or None)
-		print("Get it")
 		if form.is_valid():
-			print("Form valid")
 			new_machine = Machine(nom=form.cleaned_data['nom'],
 									mach=form.cleaned_data['mach'],
 									maintenanceDate=form.cleaned_data['maintenanceDate'])
-			print("Saved")
 			new_machine.save()
 			return redirect('machines')
 	else:

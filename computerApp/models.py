@@ -12,7 +12,7 @@ class Machine(models.Model):
 
 
     id = models.AutoField(primary_key=True,editable=False)
-    nom = models.CharField(max_length=6)
+    nom = models.CharField(max_length=32)
     maintenanceDate = models.DateField(default=datetime.now())
     mach = models.CharField(max_length=32, choices=TYPES, default='PC') 
 
