@@ -18,11 +18,17 @@ def machine_list_view(request):
 	machines = Machine.objects.all().order_by('nom')
 	query = request.GET.get('query')
 	mach = request.GET.get('type')
+	infra_id = request.GET.get('infra')
+	infrastructures = Infrastructure.objects.all()
+
 	if query:
 		machines = machines.filter(nom__icontains=query)
 	if mach:
 		machines = machines.filter(mach=mach)
-	context = {'machines': machines, 'today': today}
+	if infra_id:
+		machines = machines.filter(infra_id=infra_id)
+
+	context = {'machines': machines, 'today': today, 'infrastructures': infrastructures}
 	return render(request, 'computerApp/machine_list.html', context)
 
 def machine_detail_view(request, pk):
@@ -107,6 +113,16 @@ def delete_personnel(request, personnel_id):
     
 def infra_list_view(request):
 	infras = Infrastructure.objects.all()
+
+	for infra in infras:
+		total_machines = infra.machines.count()
+		active_machines = infra.machines.filter(etat=True).count()
+        
+		if total_machines > 0:
+			infra.usage_percentage = active_machines / total_machines * 100
+		else:
+			infra.usage_percentage = 0
+	    
 	context={'infras': infras}
 	return render(request, 'computerApp/infra_list.html', context)
 
@@ -135,7 +151,6 @@ def delete_infra(request, infrastructure_id):
         infrastructure.machines.all().delete()  # Supprimer toutes les machines associées
         infrastructure.delete()
         return redirect('infrastructures')
-
 
 api_key = "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"
 

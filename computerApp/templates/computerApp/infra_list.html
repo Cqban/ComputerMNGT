@@ -12,13 +12,17 @@
     {% for infra in infras %}
     <div class="col-md-4">
       <div class="card">
-        <div class="card-header text-center">{{ infra.nom }}</div>
+        <div class="card-header text-center">{{ infra.nom }} | {{ infra.id }}</div>
         <div class="card-body">
           <p class="card-text"><strong>Nombre de machines :</strong> {{ infra.machines.count }}</p>
+          <p class="card-text"><strong>Usage du réseau :</strong> {{ infra.usage_percentage|floatformat:2 }}%</p>
+        </div>
+        <div class="progress">
+          <div class="progress-bar progress-bar-striped bg-success" role="progressbar" style="width: {{ infra.usage_percentage }}%" aria-valuenow="{{ infra.usage_percentage }}" aria-valuemin="0" aria-valuemax="100"></div>
         </div>
         <div class="card-footer text-right d-flex justify-content-between align-items-end">
           <p class="card-text"><strong>Responsable :</strong> {{ infra.responsable.nom }} {{ infra.responsable.prenom }}</p>
-          <form method="post" action="{% url 'delete_infrastructure' infra.id %}">
+          <form method="post" action="{% url 'delete_infrastructure' infra.id %}" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette infrastructure ?')">
             {% csrf_token %}
             <button type="submit" class="btn btn-danger">Supprimer</button>
           </form>

@@ -8,12 +8,17 @@
         <input class="text" class="form-vontrol" placeholder="Nom d'une machine..." aria-label="Search" aria-describedby="button-addon2" name="query">
         <button class="btn btn-outline-success" type="submit" id="button-addon2">Rechercher</button>
     </form>
-    <div class="btn-group mb-3" role="group" aria-label="Basic example">
+    <div class="btn-group mb-3" role="group" aria-label="Filtre">
         <a href="{% url 'machines' %}" class="btn btn-secondary">Tous</a>
         <a href="?type=PC" class="btn btn-secondary">PC</a>
         <a href="?type=Mac" class="btn btn-secondary">Mac</a>
         <a href="?type=Switch" class="btn btn-secondary">Switch</a>
         <a href="?type=Serveur" class="btn btn-secondary">Serveur</a>
+    </div>
+    <div class="btn-group mb-3" role="group" aria-label="Filtre">
+        {% for infra in infrastructures %}
+            <a href="?infra={{ infra.id }}" class="btn btn-secondary">{{ infra.nom }}</a>
+        {% endfor %}
     </div>
 </div>
 <hr>

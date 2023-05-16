@@ -48,6 +48,7 @@ class Infrastructure(models.Model):
     nom = models.CharField(max_length=32)
     machines = models.ManyToManyField(Machine)
     responsable = models.ForeignKey(Personnel, on_delete=models.SET_NULL, null=True)
+    usage_percentage = models.FloatField(default=0)
 
     def ajouter_machine(self, machine):
         self.machines.add(machine)
