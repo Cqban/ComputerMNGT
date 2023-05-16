@@ -1,6 +1,25 @@
 from django import forms 
 from django.core.exceptions import ValidationError
 from datetime import date
+from .models import Infrastructure, Personnel
+
+class AddInfraForm(forms.Form):
+    nom = forms.CharField(required=True, label="Nom de l'infrastructure")
+    responsable = forms.ModelChoiceField(required=True, queryset=Personnel.objects.all(), label='Responsable')
+
+
+    def clean_nom(self):
+        data = self.cleaned_data["nom"]
+        if len(data) > 32:
+            raise forms.ValidationError("Erreur de format pour le champ nom")
+        return data
+    
+    def clean_responsable(self):
+        responsable = self.cleaned_data["responsable"]
+        responsable_id = responsable.num_secu  # Obtenir la valeur de num_secu
+        if not responsable_id:
+            raise forms.ValidationError("Veuillez sélectionner un responsable valide")
+        return responsable_id
 
 class AddMachineForm(forms.Form):
     nom = forms.CharField(required=True, label='Nom de la machine')

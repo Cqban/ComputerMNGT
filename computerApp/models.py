@@ -37,7 +37,20 @@ class Personnel(models.Model):
     sexe = models.CharField(max_length=7, choices=SEXES, default='Inconnu')
 
     def __str__(self):
-        return str(self.num_secu) + " -> " + self.nom + " -> " + self.prenom
+        return self.num_secu + " -> " + self.nom + " -> " + self.prenom
 
     def get_name(self):
         return str(self.num_secu) + " " + self.nom + " " + self.prenom
+    
+class Infrastructure(models.Model):
+
+    id = models.AutoField(primary_key=True, editable=False) 
+    nom = models.CharField(max_length=32)
+    machines = models.ManyToManyField(Machine)
+    responsable = models.ForeignKey(Personnel, on_delete=models.SET_NULL, null=True)
+
+    def __str__(self):
+        return str(self.id) + " -> " + self.nom
+
+    def get_name(self):
+        return str(self.id) + " " + self.nom

@@ -32,6 +32,9 @@
                             <a class="nav-link" href="{% url 'index' %}">Home</a>
                         </li>
                         <li class="nav-item">
+                            <a class="nav-link" href="{% url 'infrastructure' %}">Infrastructure</a>
+                        </li>
+                        <li class="nav-item">
                             <a class="nav-link" href="{% url 'machines' %}">Machines</a>
                         </li>
                         <li class="nav-item">
@@ -43,8 +46,9 @@
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Gestion</a>
                             <ul class="dropdown-menu bg-dark">
-                                <a class="dropdown-item text-light" href="{% url 'add-machine' %}" onmouseover="this.classList.add('active')" onmouseout="this.classList.remove('active')">Ajouter une machine</a>
-                                <a class="dropdown-item text-light" href="{% url 'add-personnel' %}" onmouseover="this.classList.add('active')" onmouseout="this.classList.remove('active')">Ajouter un personnel</a>
+                                <a class="dropdown-item text-light" href="{% url 'add-infra' %}" onmouseover="this.classList.add('active')" onmouseout="this.classList.remove('active')">Ajouter une Infrastructure</a>
+                                <a class="dropdown-item text-light" href="{% url 'add-machine' %}" onmouseover="this.classList.add('active')" onmouseout="this.classList.remove('active')">Ajouter une Machine</a>
+                                <a class="dropdown-item text-light" href="{% url 'add-personnel' %}" onmouseover="this.classList.add('active')" onmouseout="this.classList.remove('active')">Ajouter un Personnel</a>
                             </ul>
                         </li>
                     </ul>

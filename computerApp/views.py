@@ -1,6 +1,6 @@
 from django.shortcuts import render,get_object_or_404,redirect
-from computerApp.forms import AddMachineForm, AddPersonnelForm
-from computerApp.models import Machine, Personnel
+from computerApp.forms import AddMachineForm, AddPersonnelForm, AddInfraForm
+from computerApp.models import Machine, Personnel, Infrastructure
 import openai
 from datetime import date
 
@@ -82,7 +82,6 @@ def personnel_add_form(request):
 										num_secu=form.cleaned_data['num_secu'],
 										sexe=form.cleaned_data['sexe']
 									)
-			print("Saved")
 			new_personnel.save()
 			return redirect('personnels')
 	else:
@@ -95,6 +94,35 @@ def delete_personnel(request, personnel_id):
     if request.method == 'POST':
         personnel.delete()
         return redirect('personnels')
+    
+def infra_list_view(request):
+	infras = Infrastructure.objects.all()
+	context={'infras': infras}
+	return render(request, 'computerApp/infra_list.html', context)
+
+def infra_add_form(request):
+	if request.method == 'POST':
+		form = AddInfraForm(request.POST)
+		if form.is_valid():
+			print("form valid")
+			nom = form.cleaned_data['nom']
+			print("nom:",nom)
+			responsable_id = form.cleaned_data['responsable']
+			print("resp_id:",responsable_id)
+			responsable = get_object_or_404(Personnel, num_secu=responsable_id)
+			print("resp:",responsable)
+            
+			infrastructure = Infrastructure(nom=nom, responsable=responsable)
+			infrastructure.save()
+			return redirect('infrastructure')
+		else:
+			print(form.errors)
+	else:
+		form = AddInfraForm()
+    
+	personnels = Personnel.objects.all()
+	context = {'form': form, 'personnels': personnels}
+	return render(request, 'computerApp/infra_add.html', context)
 
 
 api_key = "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"
