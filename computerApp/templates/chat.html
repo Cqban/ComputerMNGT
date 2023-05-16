@@ -1,0 +1,36 @@
+{% extends "index.html" %}
+{% block content %}
+{% load static %}
+
+<div class="container my-5">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <div class="card">
+        <div class="card-header">Chat avec PlutonAI - IA Surentrainée (non)</div>
+        <div class="card-body chat-body">
+          {% if response %}
+            <div class="chat-message card mt-3">
+              <div class="chat-message-text card-body">
+                {{ response|safe }}
+              </div>
+            </div>
+            <img src="{% static 'computerApp/images/robot.png' %}" class="img-fluid" alt="Robot" style="float: right;">
+          {% endif %}
+        </div>
+        <div class="card-footer">
+          <form method="post">
+            {% csrf_token %}
+            <div class="input-group">
+              <input type="text" class="form-control" name="user_input" placeholder="Ecrire votre message ici">
+              <div class="input-group-append">
+                <button type="submit" class="btn btn-success">Envoyer</button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

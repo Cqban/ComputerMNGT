@@ -1,6 +1,7 @@
 {% extends "index.html" %}
 
 {% block content %}
+{% load static %}
 
 <div class="container my-5">
   <div class="row justify-content-center">
@@ -12,7 +13,14 @@
         <div class="card-body">
           <p><strong>Nom</strong> : {{ personnel.nom }}</p>
           <p><strong>Prénom</strong> : {{ personnel.prenom }}</p>
+          <p><strong>Sexe</strong> : {{ personnel.sexe }}
+          {% if personnel.sexe == "Homme" %}
+            <img class="img-fluid" src="{% static 'computerApp/images/masculin.png' %}">
+          {% elif personnel.sexe == "Femme" %}
+            <img class="img-fluid" src="{% static 'computerApp/images/feminin.png' %}">
+          {% endif %}</p>
           <p><strong>Num.Sécu</strong> : {{ personnel.num_secu }}</p>
+            
           <form action="{% url 'delete_personnel' personnel.num_secu %}" method="post">
             {% csrf_token %}
             <button type="submit" class="btn btn-danger mt-3">Virer :o</button>

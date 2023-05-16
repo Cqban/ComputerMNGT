@@ -11,26 +11,34 @@
     {% load static %}
 
     {% block content %}
-        <div>
+        <div class="filter">
             <h1>Liste du Personnel</h1>
             <form method="GET" class="input-group mb-3">
                 <input class="text" class="form-vontrol" placeholder="Nom d'une machine..." aria-label="Search" aria-describedby="button-addon2" name="q">
                 <button class="btn btn-outline-success" type="submit" id="button-addon2">Rechercher</button>
             </form>
-            <hr>
         </div>
+        <hr>
         {% if personnels %}
         <ul class="personnel-container">
             {% for personnel in personnels %}
                 <li class="personnel">
                     <a>{{ personnel.nom }} {{personnel.prenom}}</a>
-                    <img src="{% static 'computerApp/images/staff.png' %}">
+                    {% if personnel.sexe == "Homme" %}
+                        <img src="{% static 'computerApp/images/man.png' %}">
+                    {% elif personnel.sexe == "Femme" %}
+                        <img src="{% static 'computerApp/images/woman.png' %}">
+                    {% else %}
+                        <img src="{% static 'computerApp/images/unknown.png' %}">
+                    {% endif %}
                     <a href="{% url 'personnel-detail' personnel.num_secu %}" class="btn btn-primary">Details</a>
                 </li>
             {% endfor %}
         </ul>
         {% else %}
-            <p>Il n'y a pas de personnel.</p>
+        <div class="alert alert-danger">
+            Il n'y a pas de personnel qui correspond à votre filtre
+          </div>
         {% endif %}
     {% endblock %}
 </body>

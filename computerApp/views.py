@@ -2,6 +2,7 @@ from django.shortcuts import render,get_object_or_404,redirect
 from computerApp.forms import AddMachineForm, AddPersonnelForm
 from computerApp.models import Machine, Personnel
 import openai
+from datetime import date
 
 def index(request):
 	machines = Machine.objects.all()
@@ -13,18 +14,20 @@ def index(request):
 	return render(request, 'index.html', context)
 
 def machine_list_view(request):
-	machines = Machine.objects.all()
-	query = request.GET.get('q')
-	mach = request.GET.get('mach')
+	today = date.today
+	machines = Machine.objects.all().order_by('nom')
+	query = request.GET.get('query')
+	mach = request.GET.get('type')
 	if query:
 		machines = machines.filter(nom__icontains=query)
 	if mach:
 		machines = machines.filter(mach=mach)
-	context = {'machines': machines}
+	context = {'machines': machines, 'today': today}
 	return render(request, 'computerApp/machine_list.html', context)
 
 def machine_detail_view(request, pk):
 	machine = get_object_or_404(Machine, id=pk)
+	print(machine.maintenanceDate)
 	context={'machine': machine}
 	return render(request, 'computerApp/machine_detail.html', context)
 
@@ -34,7 +37,8 @@ def machine_add_form(request):
 		if form.is_valid():
 			new_machine = Machine(nom=form.cleaned_data['nom'],
 									mach=form.cleaned_data['mach'],
-									maintenanceDate=form.cleaned_data['maintenanceDate'])
+									maintenanceDate=form.cleaned_data['maintenanceDate'],
+									etat=form.cleaned_data["etat"])
 			new_machine.save()
 			return redirect('machines')
 	else:
@@ -47,10 +51,17 @@ def delete_machine(request, machine_id):
     if request.method == 'POST':
         machine.delete()
         return redirect('machines')
+    
+def toggle_machine(request, pk):
+	machine = get_object_or_404(Machine, id=pk)
+	machine.etat = not machine.etat
+	if request.method == 'POST':
+		machine.save()
+		return redirect('machine-detail', pk=pk)
 	
 
 def personnel_list_view(request):
-	personnels = Personnel.objects.all()
+	personnels = Personnel.objects.all().order_by('nom')
 	query = request.GET.get('q')
 	if query:
 		personnels = personnels.filter(nom__icontains=query)
@@ -68,7 +79,8 @@ def personnel_add_form(request):
 		if form.is_valid():
 			new_personnel = Personnel(nom=form.cleaned_data['nom'],
 										prenom=form.cleaned_data['prenom'],
-										num_secu=form.cleaned_data['num_secu']
+										num_secu=form.cleaned_data['num_secu'],
+										sexe=form.cleaned_data['sexe']
 									)
 			print("Saved")
 			new_personnel.save()
@@ -85,10 +97,12 @@ def delete_personnel(request, personnel_id):
         return redirect('personnels')
 
 
-openai.api_key = "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"
+api_key = "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"
 
 def chat_bot(request):
-	if openai.api_key is not None and request.method == 'POST':
+	chatbot_response = None
+	if api_key is not None and request.method == 'POST':
+		openai.api_key = api_key
 		user_input = request.POST.get('user_input')
 		prompt = user_input
 
@@ -96,8 +110,11 @@ def chat_bot(request):
 			engine = 'text-davinci-003',
 			prompt = prompt,
 			max_tokens=256,
-			temperature=0.5,
+			#stop="."
+			temperature=0.5
 		)
 		print(response)
 
-	return render(request, 'computerApp/chat.html', {})
+		chatbot_response = response["choices"][0]["text"]
+
+	return render(request, 'chat.html', {"response": chatbot_response})
