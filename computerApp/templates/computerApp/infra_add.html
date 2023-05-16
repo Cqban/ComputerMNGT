@@ -20,7 +20,7 @@
               <select class="form-control" id="responsable" name="responsable" required>
                 <option value="" disabled selected hidden>Choisissez un responsable</option>
                 {% for personnel in personnels %}
-                <option value="{{ personnel.num_secu }}">{{ personnel.nom }}</option>
+                <option value="{{ personnel.num_secu }}">{{ personnel.nom }} {{ personnel.prenom }}</option>
                 {% endfor %}
               </select>
             </div>

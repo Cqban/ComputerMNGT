@@ -10,11 +10,11 @@ class Machine(models.Model):
         ('Switch', ('Switch - Maintient et connect des serveurs')),
     )
 
-
     id = models.AutoField(primary_key=True, editable=False)
     nom = models.CharField(max_length=32)
     maintenanceDate = models.DateField(default=datetime.now().strftime("%Y-%m-%d"))
     mach = models.CharField(max_length=32, choices=TYPES, default='PC')
+    infra = models.ForeignKey('Infrastructure', on_delete=models.PROTECT, null=True)
     etat = models.BooleanField(default=False) 
 
     def __str__(self):
@@ -48,6 +48,15 @@ class Infrastructure(models.Model):
     nom = models.CharField(max_length=32)
     machines = models.ManyToManyField(Machine)
     responsable = models.ForeignKey(Personnel, on_delete=models.SET_NULL, null=True)
+
+    def ajouter_machine(self, machine):
+        self.machines.add(machine)
+
+    def supprimer_machine(self, machine):
+        self.machines.remove(machine)
+
+    def nombre_machines(self):
+        return self.machines.count()
 
     def __str__(self):
         return str(self.id) + " -> " + self.nom

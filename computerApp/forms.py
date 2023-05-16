@@ -1,7 +1,7 @@
 from django import forms 
 from django.core.exceptions import ValidationError
 from datetime import date
-from .models import Infrastructure, Personnel
+from .models import Personnel, Infrastructure
 
 class AddInfraForm(forms.Form):
     nom = forms.CharField(required=True, label="Nom de l'infrastructure")
@@ -26,6 +26,7 @@ class AddMachineForm(forms.Form):
     mach = forms.CharField(required=True, label='Type de machine')
     maintenanceDate = forms.DateField(required=True, label='Date de mise à jour')
     etat = forms.BooleanField(required=False, initial=False, label='Etat de la machine (On/Off)')
+    infra = forms.ModelChoiceField(required=True, queryset=Infrastructure.objects.all(), label='Infrastructure')
 
     def clean_date(self):
         data = self.cleaned_data["maintenanceDate"]
@@ -42,6 +43,13 @@ class AddMachineForm(forms.Form):
         if len(data) > 16:
             raise ValidationError(("Erreur de format pour le champ nom"))
         return data
+    
+    def clean_infra(self):
+        infra = self.cleaned_data["infra"]
+        infra_id = infra.id  # Obtenir la valeur de infra.id
+        if not infra_id:
+            raise forms.ValidationError("Veuillez sélectionner une infrastructure valide")
+        return infra_id
 
 class AddPersonnelForm(forms.Form):
     num_secu = forms.CharField(required=True, label='Numéro de sécurité sociale du du Personnel')

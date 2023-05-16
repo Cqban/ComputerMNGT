@@ -35,22 +35,32 @@ def machine_add_form(request):
 	if request.method == 'POST':
 		form = AddMachineForm(request.POST or None)
 		if form.is_valid():
+			print("form valid")
+
+			infra_id = form.cleaned_data['infra']
+			infra = get_object_or_404(Infrastructure, id=infra_id)
 			new_machine = Machine(nom=form.cleaned_data['nom'],
 									mach=form.cleaned_data['mach'],
 									maintenanceDate=form.cleaned_data['maintenanceDate'],
-									etat=form.cleaned_data["etat"])
+									etat=form.cleaned_data["etat"],
+									infra=infra)
 			new_machine.save()
+			infra.ajouter_machine(new_machine)
 			return redirect('machines')
 	else:
 		form = AddMachineForm()
-	context = {'form': form}
+
+	infras = Infrastructure.objects.all()
+	context = {'form': form, 'infras': infras}
 	return render(request, 'computerApp/machine_add.html', context)
 
 def delete_machine(request, machine_id):
-    machine = get_object_or_404(Machine, id=machine_id)
-    if request.method == 'POST':
-        machine.delete()
-        return redirect('machines')
+	machine = get_object_or_404(Machine, id=machine_id)
+	infra = machine.infra
+	if request.method == 'POST':
+		infra.supprimer_machine(machine)
+		machine.delete()
+		return redirect('machines')
     
 def toggle_machine(request, pk):
 	machine = get_object_or_404(Machine, id=pk)
@@ -104,17 +114,12 @@ def infra_add_form(request):
 	if request.method == 'POST':
 		form = AddInfraForm(request.POST)
 		if form.is_valid():
-			print("form valid")
-			nom = form.cleaned_data['nom']
-			print("nom:",nom)
 			responsable_id = form.cleaned_data['responsable']
-			print("resp_id:",responsable_id)
 			responsable = get_object_or_404(Personnel, num_secu=responsable_id)
-			print("resp:",responsable)
             
-			infrastructure = Infrastructure(nom=nom, responsable=responsable)
+			infrastructure = Infrastructure(nom=form.cleaned_data['nom'], responsable=responsable)
 			infrastructure.save()
-			return redirect('infrastructure')
+			return redirect('infrastructures')
 		else:
 			print(form.errors)
 	else:
@@ -123,6 +128,13 @@ def infra_add_form(request):
 	personnels = Personnel.objects.all()
 	context = {'form': form, 'personnels': personnels}
 	return render(request, 'computerApp/infra_add.html', context)
+
+def delete_infra(request, infrastructure_id):
+    infrastructure = get_object_or_404(Infrastructure, id=infrastructure_id)
+    if request.method == 'POST':
+        infrastructure.machines.all().delete()  # Supprimer toutes les machines associées
+        infrastructure.delete()
+        return redirect('infrastructures')
 
 
 api_key = "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"
