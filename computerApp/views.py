@@ -1,11 +1,12 @@
 from django.shortcuts import render,get_object_or_404,redirect
-from django.contrib.auth import authenticate, login as auth_login, logout
+from django.contrib.auth import authenticate, login as auth_login, logout, update_session_auth_hash
 from django.contrib import messages
 from computerApp.forms import AddMachineForm, AddPersonnelForm, AddInfraForm
 from computerApp.models import Machine, Personnel, Infrastructure
 import openai
 from datetime import date
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import PasswordChangeForm
 
 def index(request):
 	machines = Machine.objects.all()
@@ -181,6 +182,25 @@ def login(request):
 def logout_view(request):
     logout(request)
     return redirect('index')
+
+@login_required
+def profile(request):
+    return render(request, 'computerApp/profile.html')
+
+@login_required
+def change_password(request):
+    if request.method == 'POST':
+        form = PasswordChangeForm(request.user, request.POST)
+        if form.is_valid():
+            user = form.save()
+            update_session_auth_hash(request, user)  # Garde la session active
+            messages.success(request, 'Votre mot de passe a été modifié avec succès !')
+            return redirect('profile')
+        else:
+            messages.error(request, 'Veuillez corriger les erreurs ci-dessous.')
+    else:
+        form = PasswordChangeForm(request.user)
+    return render(request, 'computerApp/profile.html', {'form': form})
 
 
 api_key = "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"

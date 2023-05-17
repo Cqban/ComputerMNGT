@@ -20,7 +20,7 @@
     <body>
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
             <div class="container-fluid">
-                <a class="navbar-brand" href="#">R&T Dev</a>
+                <a class="navbar-brand" href="#"><img src="{% static 'computerApp/images/logo.png' %}" alt="logo" style="width:125px;height:62px;margin-right:1%;"></a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                 data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false"
                 aria-label="Toggle navigation">
@@ -56,11 +56,8 @@
                     </ul>
                 </div>
                 <div class="d-flex justify-content-end">
-                    <img src="{% static 'computerApp/images/logo_200px.png' %}" alt="logo"
-                    style="width:50px;height:50px;margin-right:10px;">
                     {% if user.is_authenticated %}
-                    <p>Bienvenue, {{ user.username }}!</p>
-                    <a type="button" class="btn btn-danger" role="button" href="{% url 'logout' %}">Déconnexion</a>
+                    <a type="button" class="btn" role="button" href="{% url 'profile' %}"><img class="w-75" src="{% static 'computerApp/images/profile.png' %}"></a>
                     {% else %}
                     <a type="button" class="btn btn-success" role="button" href="{% url 'login' %}">Connexion</a>
                     {% endif %}
