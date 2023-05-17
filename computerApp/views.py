@@ -1,8 +1,11 @@
 from django.shortcuts import render,get_object_or_404,redirect
+from django.contrib.auth import authenticate, login as auth_login, logout
+from django.contrib import messages
 from computerApp.forms import AddMachineForm, AddPersonnelForm, AddInfraForm
 from computerApp.models import Machine, Personnel, Infrastructure
 import openai
 from datetime import date
+from django.contrib.auth.decorators import login_required
 
 def index(request):
 	machines = Machine.objects.all()
@@ -13,6 +16,7 @@ def index(request):
 	}
 	return render(request, 'index.html', context)
 
+@login_required
 def machine_list_view(request):
 	today = date.today
 	machines = Machine.objects.all().order_by('nom')
@@ -31,18 +35,17 @@ def machine_list_view(request):
 	context = {'machines': machines, 'today': today, 'infrastructures': infrastructures}
 	return render(request, 'computerApp/machine_list.html', context)
 
+@login_required
 def machine_detail_view(request, pk):
 	machine = get_object_or_404(Machine, id=pk)
-	print(machine.maintenanceDate)
 	context={'machine': machine}
 	return render(request, 'computerApp/machine_detail.html', context)
 
+@login_required
 def machine_add_form(request):
 	if request.method == 'POST':
 		form = AddMachineForm(request.POST or None)
 		if form.is_valid():
-			print("form valid")
-
 			infra_id = form.cleaned_data['infra']
 			infra = get_object_or_404(Infrastructure, id=infra_id)
 			new_machine = Machine(nom=form.cleaned_data['nom'],
@@ -60,6 +63,7 @@ def machine_add_form(request):
 	context = {'form': form, 'infras': infras}
 	return render(request, 'computerApp/machine_add.html', context)
 
+@login_required
 def delete_machine(request, machine_id):
 	machine = get_object_or_404(Machine, id=machine_id)
 	infra = machine.infra
@@ -67,7 +71,8 @@ def delete_machine(request, machine_id):
 		infra.supprimer_machine(machine)
 		machine.delete()
 		return redirect('machines')
-    
+
+@login_required
 def toggle_machine(request, pk):
 	machine = get_object_or_404(Machine, id=pk)
 	machine.etat = not machine.etat
@@ -75,7 +80,7 @@ def toggle_machine(request, pk):
 		machine.save()
 		return redirect('machine-detail', pk=pk)
 	
-
+@login_required
 def personnel_list_view(request):
 	personnels = Personnel.objects.all().order_by('nom')
 	query = request.GET.get('q')
@@ -84,11 +89,13 @@ def personnel_list_view(request):
 	context={'personnels': personnels}
 	return render(request, 'computerApp/personnel_list.html', context)
 
+@login_required
 def personnel_detail_view(request, pk):
 	personnel = get_object_or_404(Personnel, num_secu=pk)
 	context={'personnel': personnel}
 	return render(request, 'computerApp/personnel_detail.html', context)
 
+@login_required
 def personnel_add_form(request):
 	if request.method == 'POST':
 		form = AddPersonnelForm(request.POST or None)
@@ -105,12 +112,14 @@ def personnel_add_form(request):
 	context = {'form': form}
 	return render(request, 'computerApp/personnel_add.html', context)
 
+@login_required
 def delete_personnel(request, personnel_id):
     personnel = get_object_or_404(Personnel, num_secu=personnel_id)
     if request.method == 'POST':
         personnel.delete()
         return redirect('personnels')
-    
+
+@login_required
 def infra_list_view(request):
 	infras = Infrastructure.objects.all()
 
@@ -126,6 +135,7 @@ def infra_list_view(request):
 	context={'infras': infras}
 	return render(request, 'computerApp/infra_list.html', context)
 
+@login_required
 def infra_add_form(request):
 	if request.method == 'POST':
 		form = AddInfraForm(request.POST)
@@ -145,6 +155,7 @@ def infra_add_form(request):
 	context = {'form': form, 'personnels': personnels}
 	return render(request, 'computerApp/infra_add.html', context)
 
+@login_required
 def delete_infra(request, infrastructure_id):
     infrastructure = get_object_or_404(Infrastructure, id=infrastructure_id)
     if request.method == 'POST':
@@ -152,8 +163,29 @@ def delete_infra(request, infrastructure_id):
         infrastructure.delete()
         return redirect('infrastructures')
 
+def login(request):
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            auth_login(request, user)
+            return redirect('index')
+        else:
+            messages.error(request, 'Identifiant ou mot de passe incorrect.')
+
+    return render(request, 'computerApp/login.html')
+
+@login_required
+def logout_view(request):
+    logout(request)
+    return redirect('index')
+
+
 api_key = "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"
 
+@login_required
 def chat_bot(request):
 	chatbot_response = None
 	if api_key is not None and request.method == 'POST':

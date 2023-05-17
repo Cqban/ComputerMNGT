@@ -1,4 +1,4 @@
-from django.urls import path
+from django.urls import path, include
 from . import views
 
 urlpatterns = [
@@ -15,5 +15,7 @@ urlpatterns = [
     path('infrastructure/delete/<int:infrastructure_id>/', views.delete_infra, name='delete_infrastructure'),
 	path('machine/delete/<int:machine_id>/', views.delete_machine, name='delete_machine'),
 	path('personnel/delete/<str:personnel_id>/', views.delete_personnel, name='delete_personnel'),
+	path('login/', views.login, name='login'),
+    path('logout/', views.logout_view, name='logout'),
 	path('pluton-chat/', views.chat_bot, name='chatbot'),
 ]
