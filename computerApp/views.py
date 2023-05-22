@@ -38,8 +38,9 @@ def machine_list_view(request):
 
 @login_required
 def machine_detail_view(request, pk):
+	today = date.today
 	machine = get_object_or_404(Machine, id=pk)
-	context={'machine': machine}
+	context={'machine': machine, 'today': today}
 	return render(request, 'computerApp/machine_detail.html', context)
 
 @login_required
