@@ -37,7 +37,7 @@
         <img src="{% static 'computerApp/images/server.png' %}" alt="logo">
         {% endif %}
         <div class="machineinfo">
-            <a href="{% url 'machine-detail' machine.id %}" class="btn btn-primary">Details</a>
+            <a href="{% url 'machine-detail' machine.id %}" class="btn btn-primary">Détails</a>
             {% if machine.maintenanceDate == today %}
                 <img src="{% static 'computerApp/images/process.png' %}" title="Cette machine est actuellement en maintenance" alt="maj">
             {% elif machine.etat == True %}

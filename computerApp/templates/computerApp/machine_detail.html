@@ -15,6 +15,7 @@
           <p><strong>Id</strong> : {{ machine.id }}</p>
           <p><strong>Date de maintenance</strong> : {{ machine.maintenanceDate }}</p>
           <p><strong>Type</strong> : {{ machine.mach }}</p>
+          <p><strong>Responsable :</strong> <a href="{% url 'personnel-detail' machine.responsable.num_secu %}"> {{ machine.responsable.nom }} {{ machine.responsable.prenom }}</a></p>
           <p><strong>Infrastructure</strong> : {{ machine.infra.nom }}</p>
           <p><strong>Etat actuel</strong> : {% if machine.maintenanceDate == today %}<img src="{% static 'computerApp/images/process.png' %}">{% elif machine.etat %}<img src="{% static 'computerApp/images/on.png' %}" alt="logo">{% else %}<img src="{% static 'computerApp/images/off.png' %}" alt="logo">{% endif %}</p>
           <div class="d-flex justify-content-between align-items-end">

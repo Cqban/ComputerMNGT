@@ -48,12 +48,15 @@ def machine_add_form(request):
 	if request.method == 'POST':
 		form = AddMachineForm(request.POST or None)
 		if form.is_valid():
+			responsable_id = form.cleaned_data['responsable']
+			responsable = get_object_or_404(Personnel, num_secu=responsable_id)
 			infra_id = form.cleaned_data['infra']
 			infra = get_object_or_404(Infrastructure, id=infra_id)
 			new_machine = Machine(nom=form.cleaned_data['nom'],
 									mach=form.cleaned_data['mach'],
 									maintenanceDate=form.cleaned_data['maintenanceDate'],
 									etat=form.cleaned_data["etat"],
+									responsable=responsable,
 									infra=infra)
 			new_machine.save()
 			infra.ajouter_machine(new_machine)
@@ -61,8 +64,9 @@ def machine_add_form(request):
 	else:
 		form = AddMachineForm()
 
+	personnels = Personnel.objects.all()
 	infras = Infrastructure.objects.all()
-	context = {'form': form, 'infras': infras}
+	context = {'form': form, 'infras': infras, 'personnels': personnels}
 	return render(request, 'computerApp/machine_add.html', context)
 
 @login_required
@@ -178,6 +182,23 @@ def login(request):
             messages.error(request, 'Identifiant ou mot de passe incorrect.')
 
     return render(request, 'computerApp/login.html')
+
+def edit_maintenance(request):
+    if request.method == 'POST':
+        machine_id = request.POST.get('machine')
+        date = request.POST.get('date')
+
+        machine = Machine.objects.get(id=machine_id)
+        machine.maintenanceDate = date
+        machine.save()
+
+        # Rediriger vers une page de confirmation ou autre
+        return redirect('machines')
+
+    # Si la méthode HTTP n'est pas POST, simplement afficher le formulaire
+    machines = Machine.objects.all()
+    context = {'machines': machines}
+    return render(request, 'computerApp/maintenance_edit.html', context)
 
 @login_required
 def logout_view(request):

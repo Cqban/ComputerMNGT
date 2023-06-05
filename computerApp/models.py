@@ -1,28 +1,6 @@
 from django.db import models
 from datetime import datetime
 
-class Machine(models.Model):
-
-    TYPES = (
-        ('PC', ('PC - Utilise Windows 11')),
-        ('Mac', ('Mac - Utilise MacOS')),
-        ('Serveur', ('Serveur - Serveur pour déployer des VM')),
-        ('Switch', ('Switch - Maintient et connect des serveurs')),
-    )
-
-    id = models.AutoField(primary_key=True, editable=False)
-    nom = models.CharField(max_length=32)
-    maintenanceDate = models.DateField(default=datetime.now().strftime("%Y-%m-%d"))
-    mach = models.CharField(max_length=32, choices=TYPES, default='PC')
-    infra = models.ForeignKey('Infrastructure', on_delete=models.PROTECT, null=True)
-    etat = models.BooleanField(default=False) 
-
-    def __str__(self):
-        return str(self.id) + " -> " + self.nom
-
-    def get_name(self):
-        return str(self.id) + " " + self.nom
-
 class Personnel(models.Model):
 
     SEXES = (
@@ -41,6 +19,29 @@ class Personnel(models.Model):
 
     def get_name(self):
         return str(self.num_secu) + " " + self.nom + " " + self.prenom
+    
+class Machine(models.Model):
+
+    TYPES = (
+        ('PC', ('PC - Utilise Windows 11')),
+        ('Mac', ('Mac - Utilise MacOS')),
+        ('Serveur', ('Serveur - Serveur pour déployer des VM')),
+        ('Switch', ('Switch - Maintient et connect des serveurs')),
+    )
+
+    id = models.AutoField(primary_key=True, editable=False)
+    nom = models.CharField(max_length=32)
+    maintenanceDate = models.DateField(default=datetime.now().strftime("%Y-%m-%d"))
+    mach = models.CharField(max_length=32, choices=TYPES, default='PC')
+    infra = models.ForeignKey('Infrastructure', on_delete=models.PROTECT, null=True)
+    responsable = models.ForeignKey(Personnel, on_delete=models.SET_NULL, null=True)
+    etat = models.BooleanField(default=False) 
+
+    def __str__(self):
+        return str(self.id) + " -> " + self.nom
+
+    def get_name(self):
+        return str(self.id) + " " + self.nom
     
 class Infrastructure(models.Model):
 

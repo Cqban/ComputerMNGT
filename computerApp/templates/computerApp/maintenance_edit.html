@@ -1,0 +1,36 @@
+{% extends "index.html" %}
+
+{% block content %}
+<div class="container my-5">
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-header">
+          <h3 class="text-center">Planifier une maintenance</h3>
+        </div>
+        <div class="card-body">
+          <form method="post" action="{% url 'maintenance' %}">
+            {% csrf_token %}
+            <div class="mb-3">
+              <label for="machine">Machine</label>
+              <select class="form-select" id="machine" name="machine" required>
+                <option value="" disabled selected>Choisir une machine</option>
+                {% for machine in machines %}
+                <option value="{{ machine.id }}">{{ machine.nom }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="mb-3">
+              <label for="date">Date de maintenance</label>
+              <input type="date" class="form-control" id="date" name="date" required>
+            </div>
+            <div class="text-center">
+              <button type="submit" class="btn btn-primary">Valider</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

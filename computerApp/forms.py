@@ -26,6 +26,7 @@ class AddMachineForm(forms.Form):
     mach = forms.CharField(required=True, label='Type de machine')
     maintenanceDate = forms.DateField(required=True, label='Date de mise à jour')
     etat = forms.BooleanField(required=False, initial=False, label='Etat de la machine (On/Off)')
+    responsable = forms.ModelChoiceField(required=True, queryset=Personnel.objects.all(), label='Responsable')
     infra = forms.ModelChoiceField(required=True, queryset=Infrastructure.objects.all(), label='Infrastructure')
 
     def clean_date(self):
@@ -43,6 +44,13 @@ class AddMachineForm(forms.Form):
         if len(data) > 16:
             raise ValidationError(("Erreur de format pour le champ nom"))
         return data
+    
+    def clean_responsable(self):
+        responsable = self.cleaned_data["responsable"]
+        responsable_id = responsable.num_secu  # Obtenir la valeur de num_secu
+        if not responsable_id:
+            raise forms.ValidationError("Veuillez sélectionner un responsable valide")
+        return responsable_id
     
     def clean_infra(self):
         infra = self.cleaned_data["infra"]
