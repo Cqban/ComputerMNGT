@@ -183,6 +183,14 @@ def login(request):
 
     return render(request, 'computerApp/login.html')
 
+@login_required
+def maintenances_view(request):
+   today = date.today()
+   maintenances = Machine.objects.filter(maintenanceDate__gte=today).order_by('maintenanceDate')
+   past_maintenances = Machine.objects.filter(maintenanceDate__lt=today).order_by('maintenanceDate')
+   context = {'maintenances': maintenances, 'past_maintenances': past_maintenances}
+   return render(request, 'computerApp/maintenances.html', context)
+
 def edit_maintenance(request):
     if request.method == 'POST':
         machine_id = request.POST.get('machine')

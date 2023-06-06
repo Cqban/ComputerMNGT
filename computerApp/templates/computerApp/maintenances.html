@@ -1,0 +1,51 @@
+{% extends "index.html" %}
+
+
+{% block content %}
+<div class="container mt-5">
+ <h2>Maintenances à venir</h2>
+ <table class="table table-striped table-hover">
+   <thead>
+     <tr>
+       <th class="text-white">Nom de la machine</th>
+       <th class="text-white">Infrastructure</th>
+       <th class="text-white">Date de maintenance</th>
+       <th class="text-white">Responsable</th>
+     </tr>
+   </thead>
+   <tbody>
+     {% for maintenance in maintenances %}
+     <tr>
+       <td class="text-white">{{ maintenance.nom }}</td>
+       <td class="text-white">{{ maintenance.infra.nom }}</td>
+       <td class="text-white">{{ maintenance.maintenanceDate }}</td>
+       <td class="text-white">{{ maintenance.responsable.nom }} {{ maintenance.responsable.prenom }}</td>
+     </tr>
+     {% endfor %}
+   </tbody>
+ </table>
+</div>
+<div class="container mt-5">
+   <h2 class="text-white">Maintenances récentes</h2>
+   <table class="table table-striped table-hover">
+     <thead>
+       <tr>
+         <th class="text-white">Nom de la machine</th>
+         <th class="text-white">Infrastructure</th>
+         <th class="text-white">Date de maintenance</th>
+         <th class="text-white">Responsable</th>
+       </tr>
+     </thead>
+     <tbody>
+       {% for maintenance in past_maintenances %}
+       <tr>
+           <td class="text-white">{{ maintenance.nom }}</td>
+           <td class="text-white">{{ maintenance.infra.nom }}</td>
+           <td class="text-white">{{ maintenance.maintenanceDate }}</td>
+           <td class="text-white">{{ maintenance.responsable.nom }} {{ maintenance.responsable.prenom }}</td>
+       </tr>
+       {% endfor %}
+     </tbody>
+   </table>
+</div>
+{% endblock %}
